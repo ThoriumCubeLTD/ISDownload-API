@@ -1,6 +1,6 @@
 package com.infernalsuite.isdownloadapi.database.model;
 
-import com.infernalsuite.isdownloadapi.util.BringChaosToOrder;
+import com.infernalsuite.isdownloadapi.util.IWillHaveOrder;
 import com.infernalsuite.isdownloadapi.util.NameSource;
 import com.infernalsuite.isdownloadapi.util.TimeSource;
 import org.bson.types.ObjectId;
@@ -26,5 +26,5 @@ public record Version(
     // NOTE: this pattern cannot contain any capturing groups
     @Language("RegExp")
     public static final String PATTERN = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?";
-    public static final Comparator<Version> COMPARATOR = BringChaosToOrder.timeOrNameComparator();
+    public static final Comparator<Version> COMPARATOR = IWillHaveOrder.timeOrNameComparator();
 }

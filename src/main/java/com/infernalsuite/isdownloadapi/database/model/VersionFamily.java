@@ -1,6 +1,6 @@
 package com.infernalsuite.isdownloadapi.database.model;
 
-import com.infernalsuite.isdownloadapi.util.BringChaosToOrder;
+import com.infernalsuite.isdownloadapi.util.IWillHaveOrder;
 import com.infernalsuite.isdownloadapi.util.NameSource;
 import com.infernalsuite.isdownloadapi.util.TimeSource;
 import org.bson.types.ObjectId;
@@ -20,5 +20,5 @@ public record VersionFamily(
         String name,
         @Nullable Instant time) implements NameSource, TimeSource {
 
-    public static final Comparator<VersionFamily> COMPARATOR = BringChaosToOrder.timeOrNameComparator();
+    public static final Comparator<VersionFamily> COMPARATOR = IWillHaveOrder.timeOrNameComparator();
 }

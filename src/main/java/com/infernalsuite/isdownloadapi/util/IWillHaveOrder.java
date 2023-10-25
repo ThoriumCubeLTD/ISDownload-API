@@ -4,8 +4,8 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.Objects;
 
-public final class BringChaosToOrder {
-    private BringChaosToOrder() {
+public final class IWillHaveOrder {
+    private IWillHaveOrder() {
     }
 
     public static <T extends NameSource & TimeSource> Comparator<T> timeOrNameComparator() {
