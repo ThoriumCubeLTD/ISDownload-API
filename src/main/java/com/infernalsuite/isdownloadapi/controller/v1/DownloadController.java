@@ -109,24 +109,25 @@ public class DownloadController {
         final Version version = versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
         final Build build = builds.findByProjectAndVersionAndNumber(project._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
         final Artifact artifact = artifacts.findByProjectAndVersionAndBuildAndName(project._id(), version._id(), build._id(), artifactName).orElseThrow(ArtifactNotFound::new);
-        for (final Map.Entry<String, Artifact.Download> download: artifact.downloads().entrySet()) {
-            if (download.getValue().name().equals(downloadName)) {
-                try {
-                    return new JavaArchive(
-                            this.configuration.getStoragePath()
-                                    .resolve(project.name())
-                                    .resolve(version.name())
-                                    .resolve(String.valueOf(build.number()))
-                                    .resolve(artifact.name())
-                                    .resolve(download.getValue().name()),
-                            CACHE
-                    );
-                } catch (final IOException e) {
-                    throw new DownloadFailed(e);
-                }
+
+        Artifact.Download download = artifact.downloads().get(downloadName);
+        if (download == null) {
+            throw new DownloadNotFound();
+        } else {
+            try {
+                return new JavaArchive(
+                        this.configuration.getStoragePath()
+                                .resolve(project.name())
+                                .resolve(version.name())
+                                .resolve(String.valueOf(build.number()))
+                                .resolve(artifact.name())
+                                .resolve(download.name()),
+                        CACHE
+                );
+            } catch (final IOException e) {
+                throw new DownloadFailed(e);
             }
         }
-        throw new DownloadNotFound();
     }
 
     private static class JavaArchive extends ResponseEntity<FileSystemResource> {
