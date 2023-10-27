@@ -21,4 +21,10 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.checkerframework:checker-qual:3.8.0")
     implementation("org.jetbrains:annotations:24.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.5")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
