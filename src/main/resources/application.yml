@@ -2,11 +2,18 @@ spring:
   data:
     mongodb:
       database: "library"
+      uri: ""
   mvc:
     throw-exception-if-no-handler-found: true
   web:
     resources:
       add-mappings: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
 springdoc:
   api-docs:
     path: "/openapi"
@@ -20,3 +27,8 @@ server:
     error:
       whitelabel:
         enabled: false
+    forward-headers-strategy: "framework"
+    port: 8080
+app:
+  storagePath: ""
+  apiBaseUrl: "http://localhost/api"
