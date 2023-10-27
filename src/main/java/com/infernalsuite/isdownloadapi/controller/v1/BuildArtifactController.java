@@ -65,11 +65,11 @@ public class BuildArtifactController {
             @Parameter(name = "project", description = "The project name.", example = "aspaper")
             @PathVariable("project")
             final String projectName,
-            @Parameter(name = "version", description = "The version number.", example = "1.0.0")
+            @Parameter(name = "version", description = "The version number.", example = "1.20.2")
             @PathVariable("version")
             @Pattern(regexp = Version.PATTERN)
             final String versionName,
-            @Parameter(name = "build", description = "The build number.", example = "1")
+            @Parameter(name = "build", description = "The build number.", example = "10")
             @PathVariable("build")
             final int buildNumber,
             @Parameter(name = "artifact", description = "The artifact name.", example = "aspaper-1.0.0")
@@ -78,7 +78,7 @@ public class BuildArtifactController {
     ) {
         final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
         final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
-        final Build build = this.builds.findByProjectAndVersionAndNumber(version._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
+        final Build build = this.builds.findByProjectAndVersionAndNumber(project._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
         final Artifact artifact = this.artifacts.findByProjectAndVersionAndBuildAndName(project._id(), version._id(), build._id(), artifactName).orElseThrow(ArtifactNotFound::new);
         return HTTP.cachedOk(ArtifactResponse.from(project, version, build, artifact), CACHE);
     }
@@ -96,9 +96,7 @@ public class BuildArtifactController {
             @Schema(name = "artifact", example = "aspaper-1.0.0")
             String artifact,
             @Schema(name = "downloads")
-            Map<String, Artifact.Download> downloads,
-            @Schema(name = "channel")
-            Artifact.Channel channel
+            Map<String, Artifact.Download> downloads
     ) {
         static ArtifactResponse from(final Project project, final Version version, final Build build, final Artifact artifact) {
             return new ArtifactResponse(
@@ -107,8 +105,7 @@ public class BuildArtifactController {
                     version.name(),
                     build.number(),
                     artifact.name(),
-                    artifact.downloads(),
-                    artifact.channel()
+                    artifact.downloads()
             );
         }
     }
