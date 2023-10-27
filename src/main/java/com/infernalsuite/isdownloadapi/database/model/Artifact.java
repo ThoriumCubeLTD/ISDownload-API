@@ -12,31 +12,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Map;
 import java.util.Objects;
 
-@CompoundIndex(def = "{'project': 1, 'version': 1")
 @CompoundIndex(def = "{'project': 1, 'version': 1, 'build': 1")
+@CompoundIndex(def = "{'project': 1, 'version': 1, 'build': 1, 'name': 1")
 @Document(collection = "artifacts")
 public record Artifact(
-        @Id Object id,
+        @Id ObjectId _id,
         ObjectId project,
         ObjectId version,
         ObjectId build,
         String name,
-        Map<String, Download> downloads,
-        @JsonProperty
-        @Nullable Channel channel
+        Map<String, Download> downloads
 
         ) {
-
-    public Channel channelOrDefault() {
-        return Objects.requireNonNullElse(this.channel(), Channel.DEFAULT);
-    }
-
-    public enum Channel {
-        @JsonProperty("default")
-        DEFAULT,
-        @JsonProperty("experimental")
-        EXPERIMENTAL;
-    }
 
     @Schema
     public record Download(
