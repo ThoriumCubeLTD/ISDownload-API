@@ -101,8 +101,7 @@ public class BuildArtifactsController {
                     build.number(),
                     artifacts.stream().map(artifact -> new BuildArtifact(
                             artifact.name(),
-                            artifact.downloads(),
-                            artifact.channel()
+                            artifact.downloads()
                     )).toList());
         }
     }
@@ -112,9 +111,7 @@ public class BuildArtifactsController {
             @Schema(name = "artifact_name", example = "aspaper-1.17.1-1")
             String name,
             @Schema(name = "downloads")
-            Map<String, Artifact.Download> downloads,
-            @Schema(name = "channel")
-            Artifact.Channel channel
+            Map<String, Artifact.Download> downloads
     ) {
     }
 }
