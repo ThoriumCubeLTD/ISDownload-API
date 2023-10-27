@@ -42,6 +42,12 @@ class Advice {
     this.json = json;
   }
 
+  @ExceptionHandler(ArtifactNotFound.class)
+  @ResponseBody
+    public ResponseEntity<?> artifactNotFound(final ArtifactNotFound exception) {
+        return this.error(HttpStatus.NOT_FOUND, "Artifact not found.");
+    }
+
   @ExceptionHandler(BuildNotFound.class)
   @ResponseBody
   public ResponseEntity<?> buildNotFound(final BuildNotFound exception) {
@@ -71,6 +77,12 @@ class Advice {
   public ResponseEntity<?> versionNotFound(final VersionNotFound exception) {
     return this.error(HttpStatus.NOT_FOUND, "Version not found.");
   }
+
+  @ExceptionHandler(LatestNotFound.class)
+  @ResponseBody
+    public ResponseEntity<?> latestNotFound(final LatestNotFound exception) {
+        return this.error(HttpStatus.NOT_FOUND, "Latest version not found.");
+    }
 
   @ExceptionHandler(NoHandlerFoundException.class)
   @ResponseBody
