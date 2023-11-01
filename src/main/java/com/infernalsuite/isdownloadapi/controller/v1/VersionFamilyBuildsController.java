@@ -106,7 +106,8 @@ public class VersionFamilyBuildsController {
                             versions.get(build.version()).name(),
                             build.number(),
                             build.time(),
-                            build.changes()
+                            build.changes(),
+                            build.channelOrDefault()
                     )).toList()
             );
         }
@@ -120,7 +121,9 @@ public class VersionFamilyBuildsController {
                 @Schema(name = "time")
                 Instant time,
                 @Schema(name = "changes")
-                List<Build.Change> changes
+                List<Build.Change> changes,
+                @Schema(name = "channel")
+                Build.Channel channel
         ) {
         }
     }
