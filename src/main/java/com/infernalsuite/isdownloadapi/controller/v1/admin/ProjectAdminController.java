@@ -42,7 +42,7 @@ public class ProjectAdminController {
         }
         try {
             Project savedProject = this.projects.save(project);
-            return ResponseEntity.ok().cacheControl(CACHE).body(savedProject);
+            return ResponseEntity.status(HttpStatus.CREATED).cacheControl(CACHE).body(savedProject);
         } catch (NonTransientDataAccessException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).cacheControl(CACHE).build();
         }
