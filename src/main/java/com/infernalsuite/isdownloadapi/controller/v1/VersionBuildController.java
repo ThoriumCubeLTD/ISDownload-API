@@ -90,7 +90,9 @@ public class VersionBuildController {
             @Schema(name = "time")
             Instant time,
             @Schema(name = "changes")
-            List<Build.Change> changes
+            List<Build.Change> changes,
+            @Schema(name = "channel")
+            Build.Channel channel
     ) {
         static BuildResponse from(final Project project, final Version version, final Build build) {
             return new BuildResponse(
@@ -99,7 +101,8 @@ public class VersionBuildController {
                     version.name(),
                     build.number(),
                     build.time(),
-                    build.changes()
+                    build.changes(),
+                    build.channelOrDefault()
             );
         }
     }
