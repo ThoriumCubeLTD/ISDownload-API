@@ -11,7 +11,7 @@ public record CompleteJSONSchema(
         @Nullable Instant versionFamilyTime,
         String version,
         @Nullable Instant versionTime,
-        int buildNumber,
+        int build,
         Instant buildTime,
         List<Map<String, String>> buildChanges,
         Map<String, Map<String, Map<String, String>>> artifacts,
