@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -51,8 +54,8 @@ public class UploadAdminController {
     }
 
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Version Family created."),
-            @ApiResponse(responseCode = "409", description = "Conflicting version family name.")
+            @ApiResponse(responseCode = "201", description = "Build added."),
+            @ApiResponse(responseCode = "409", description = "Conflicting build already exists.")
     })
     @PostMapping(value = "/v1/admin/upload",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -103,17 +106,17 @@ public class UploadAdminController {
 
         ObjectId buildId = new ObjectId();
         try {
-            Optional<Build> savedBuild = this.builds.findByProjectAndVersionAndNumber(projectId, versionId, completeJSONSchema.buildNumber());
+            Optional<Build> savedBuild = this.builds.findByProjectAndVersionAndNumber(projectId, versionId, completeJSONSchema.build());
             if (savedBuild.isEmpty()) {
                 List<Build.Change> changes = new LinkedList<>();
                 completeJSONSchema.buildChanges().forEach(jsonChange -> {
                     Build.Change change = new Build.Change(jsonChange.get("commit"), jsonChange.get("summary"), jsonChange.get("message"));
                     changes.add(change);
                 });
-                Build build = new Build(buildId, projectId, versionId, completeJSONSchema.buildNumber(), completeJSONSchema.buildTime(), changes, Build.Channel.valueOf(completeJSONSchema.channel()));
+                Build build = new Build(buildId, projectId, versionId, completeJSONSchema.build(), completeJSONSchema.buildTime(), changes, Build.Channel.valueOf(completeJSONSchema.channel()));
                 this.builds.save(build);
             } else {
-                buildId = savedBuild.get()._id();
+                return ResponseEntity.status(HttpStatus.CONFLICT).cacheControl(CACHE).build();
             }
         } catch (NonTransientDataAccessException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).cacheControl(CACHE).build();
@@ -130,18 +133,13 @@ public class UploadAdminController {
                 )))));
                 this.artifacts.saveAll(artifactsToSave.values());
 
-//                Map<String, Artifact> artifactsToSave = new HashMap<>();
-//                ObjectId finalVersionId = versionId;
-//                ObjectId finalBuildId = buildId;
-//                completeJSONSchema.artifacts().forEach((key, value) -> {
-//                    ObjectId artifactId = new ObjectId();
-//                    artifactsToSave.put(key, new Artifact(artifactId, projectId, finalVersionId, finalBuildId, key, mapToDownloads(value)));
-//                });
-//
-//                this.artifacts.saveAll(artifactsToSave.values());
-
-                Latest latest = new Latest(projectId, versionId, buildId);
-                this.latest.save(latest);
+                Optional<Latest> latest = this.latest.findByProject(projectId);
+                Latest newLatest = new Latest(new ObjectId(), projectId, versionId, buildId);
+                if (latest.isEmpty()) {
+                    this.latest.updateLatest(null, newLatest);
+                } else {
+                    this.latest.updateLatest(latest.get().id(), newLatest);
+                }
             } catch (NonTransientDataAccessException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).cacheControl(CACHE).build();
             }
@@ -149,13 +147,5 @@ public class UploadAdminController {
             return ResponseEntity.status(HttpStatus.CONFLICT).cacheControl(CACHE).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).cacheControl(CACHE).build();
-    }
-
-    private Map<String, Artifact.Download> mapToDownloads(Map<String, Map<String, String>> map) {
-        Map<String, Artifact.Download> downloads = new HashMap<>();
-        map.forEach((key, value) -> {
-            downloads.put(key, new Artifact.Download(value.get("name"), value.get("sha256")));
-        });
-        return downloads;
     }
 }
