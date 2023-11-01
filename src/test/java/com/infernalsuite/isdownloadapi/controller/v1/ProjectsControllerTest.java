@@ -3,7 +3,6 @@ package com.infernalsuite.isdownloadapi.controller.v1;
 import com.infernalsuite.isdownloadapi.database.model.Project;
 import com.infernalsuite.isdownloadapi.database.repository.ProjectCollection;
 import org.bson.types.ObjectId;
-import org.json.JSONStringer;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -18,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 @WebMvcTest(value = ProjectsController.class)
-class ProjectsControllerTest {
+public class ProjectsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,16 +45,5 @@ class ProjectsControllerTest {
 
         JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 
-        JSONStringer newexpected = new JSONStringer();
-        newexpected
-                .object()
-                .key("project_id").value("project1")
-                .key("project_name").value("project1")
-                .key("versions_group").array().value("1.20").endArray()
-                .key("versions").array().value("1.20.1").endArray()
-                .endObject();
-
-
-        System.out.println(newexpected.toString());
     }
 }
