@@ -222,7 +222,7 @@ public class DownloadController {
     )
     @GetMapping("/v1/projects/{project:[a-z]+}/latest/download")
     @Operation(summary = "Download the given file from the given artifact")
-    public void downloadFiles(
+    public void downloadLatest(
             HttpServletResponse response,
             @Parameter(name = "project")
             @PathVariable("project")
