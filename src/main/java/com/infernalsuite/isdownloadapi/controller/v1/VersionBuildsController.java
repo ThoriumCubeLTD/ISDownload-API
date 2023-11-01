@@ -91,7 +91,8 @@ public class VersionBuildsController {
                     builds.stream().map(build -> new VersionBuild(
                             build.number(),
                             build.time(),
-                            build.changes()
+                            build.changes(),
+                            build.channelOrDefault()
                     )).toList()
             );
         }
@@ -103,7 +104,9 @@ public class VersionBuildsController {
                 @Schema(name = "time")
                 Instant time,
                 @Schema(name = "changes")
-                List<Build.Change> changes
+                List<Build.Change> changes,
+                @Schema(name = "channel")
+                Build.Channel channel
         ) {
         }
     }
