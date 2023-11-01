@@ -102,10 +102,10 @@ public class LatestController {
             String project_id,
             @Schema(name = "project_name", description = "Project ID", example = "ASPaper")
             String project_name,
-            @Schema(name = "version_id", description = "Version ID", example = "1.17.1")
-            String version_id,
-            @Schema(name = "build_id", description = "Build ID", example = "10")
-            int buildNumber,
+            @Schema(name = "version", description = "Version ID", example = "1.17.1")
+            String version,
+            @Schema(name = "build", description = "Build ID", example = "10")
+            int build,
             @Schema(name = "artifacts")
             List<LatestArtifact> artifacts
     ) {
@@ -124,7 +124,7 @@ public class LatestController {
 
     public record LatestArtifact(
             @Schema(name = "artifact_name", example = "server")
-            String id,
+            String name,
             @Schema(name = "downloads")
             Map<String, Artifact.Download> downloads
     ) {
